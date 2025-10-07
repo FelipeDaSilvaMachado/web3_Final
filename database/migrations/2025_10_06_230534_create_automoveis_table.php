@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('nome', 255);
             $table->string('marca', 100);
             $table->string('modelo', 100);
-            $table->date('ano',10);
-            $table->string('cor',20);
+            $table->string('ano', 10); // ← corrigido: era date(), agora string
+            $table->string('cor', 20);
             $table->text('descricao')->nullable();
             $table->timestamps();
         });
