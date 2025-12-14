@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Automoveis;
 use Illuminate\Http\Request;
+// use Symfony\Component\HttpFoundation\AcceptHeader;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 class AutomoveisController extends Controller
 {
@@ -36,6 +39,15 @@ class AutomoveisController extends Controller
             'descricao' => 'nullable|string',
         ]);
 
+        try {
+            $automoveis = Automoveis::create($request->all());
+            return response()->json($automoveis, 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'erro' => 'Erro ao criar registro',
+                'mensagem' => $e->getMessage()
+            ], 500);
+        }
         // Criando o registro usando mass assignment (previamente configurado no model)
         $automoveis = Automoveis::create($request->all());
 
@@ -45,24 +57,40 @@ class AutomoveisController extends Controller
     // Atualiza um registro existente
     public function update(Request $request, $id)
     {
-        $automoveis = Automoveis::find($id);
-        if (!$automoveis) {
-            return response()->json(['erro' => 'Item não encontrado'], 404);
+        try {
+            $automoveis = Automoveis::findOrFail($id);
+
+            $validated = $request->validate([
+                'nome' => 'sometimes|string',
+                'marca' => 'sometimes|string',
+                'modelo' => 'sometimes|string',
+                'ano' => 'sometimes|string',
+                'cor' => 'sometimes|string',
+                'descricao' => 'sometimes|string',
+            ]);
+
+            // Atualizando somente os campos enviados
+            $automoveis->update($validated);
+
+            return response()->json([
+                'message' => 'Automóvel atualizado com sucesso',
+                'data' => $automoveis,
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Automóvel não encontrado'
+            ], 404);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Erro de validação',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao atualizar automóvel',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $request->validate([
-            'nome' => 'sometimes|string',
-            'marca' => 'sometimes|string',
-            'modelo' => 'sometimes|string',
-            'ano' => 'sometimes|string',
-            'cor' => 'sometimes|string',
-            'descricao' => 'nullable|string',
-        ]);
-
-        // Atualizando somente os campos enviados
-        $automoveis->update($request->all());
-
-        return response()->json($automoveis, 200);
     }
 
     // Remove um registro pelo ID
