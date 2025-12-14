@@ -114,7 +114,7 @@ function carregarAutomoveis() {
                         <td>${auto.modelo}</td>
                         <td><span class="badge bg-secondary">${auto.ano}</span></td>
                         <td>
-                            <span class="badge" style="background-color: ${getCorHex(auto.cor)}; color: white">
+                            <span class="badge" style="background-color: ${getCorHex(auto.cor)}; color: Branco">
                                 ${auto.cor}
                             </span>
                         </td>
@@ -123,7 +123,7 @@ function carregarAutomoveis() {
                                 <button class="btn btn-outline-primary" onclick="verDetalhes(${auto.id})" title="Ver">
                                     <i class="bi bi-eye"></i>
                                 </button>
-                                <button class="btn btn-outline-warning" onclick="editarAutomovel(${auto.id})" title="Editar">
+                                <button class="btn btn-outline-warning" onclick="alterar(${auto.id})" title="Editar">
                                     <i class="bi bi-pencil"></i>
                                 </button>
                                 <button class="btn btn-outline-danger" onclick="confirmarExclusao(${auto.id}, '${auto.nome || auto.marca}')" title="Excluir">
@@ -158,7 +158,7 @@ function carregarAutomoveis() {
 function getCorHex(cor) {
     const cores = {
         'Preto': '#000000',
-        'Branco': '#FFFFFF',
+        'Branco': '#000000',
         'Prata': '#C0C0C0',
         'Cinza': '#808080',
         'Vermelho': '#FF0000',
@@ -175,9 +175,8 @@ function verDetalhes(id) {
     window.location.href = `/automoveis/${id}`;
 }
 
-function editarAutomovel(id) {
-    // Implementar edição (modal ou página separada)
-    mostrarNotificacao(`Editar automóvel ID: ${id}`, 'info');
+function alterar(id) {
+    window.location.href = `/automoveis/${id}/edit`;
 }
 
 function confirmarExclusao(id, nome) {

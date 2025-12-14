@@ -17,6 +17,11 @@ Route::get('/automoveis/create', function () {
     return view('automoveis.create');
 })->name('automoveis.create');
 
+// Rota para alterar automóvel
+Route::get('/automoveis/{id}/edit', function ($id) {
+    return view('automoveis.edit', ['id' => $id]);
+})->name('automoveis.edit');
+
 // Rota para ver detalhes do automóvel
 Route::get('/automoveis/{id}', function ($id) {
     return view('automoveis.show', ['id' => $id]);
